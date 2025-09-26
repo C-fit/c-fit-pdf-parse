@@ -30,7 +30,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: catuscio/c-fit-langgraph-backend
+          images: catuscio/c-fit-pdf-parse
           tags: |
             type=ref,event=tag
 
@@ -48,6 +48,6 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v3
         with:
-          subject-name: index.docker.io/catuscio/c-fit-langgraph-backend
+          subject-name: index.docker.io/catuscio/c-fit-pdf-parse
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
