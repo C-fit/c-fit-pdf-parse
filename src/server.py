@@ -81,7 +81,7 @@ async def preprocess_resume_endpoint(resume_file: UploadFile = File(...)):
         # CPU를 많이 사용하는 load_pdf 함수가 서버의 메인 이벤트 루프를 막지 않도록 합니다.
         result = await run_in_threadpool(load_pdf, temp_file_path)
         
-        return {"resume_details": result}
+        return {"resume": result}
 
     except Exception as e:
         print(f"An error occurred: {e}")
