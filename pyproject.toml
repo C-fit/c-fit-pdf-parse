@@ -1,0 +1,13 @@
+[project]
+name = "c-fit-pdf-parse"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "docling==2.54.0",
+    "fastapi>=0.117.1",
+    "gunicorn>=23.0.0",
+    "python-multipart>=0.0.20",
+    "uvicorn[standard]>=0.37.0",
+]
