@@ -11,9 +11,9 @@ on:
   push:
     branches:
       # NOTE: 사용 할 브랜치만 빼고 주석처리
-      - main     # 프로덕션 배포
-      - release  # 프로덕션 배포
-      - develop  # 개발 환경 배포
+      # - main     # 프로덕션 배포
+      # - release  # 프로덕션 배포
+      # - develop  # 개발 환경 배포
       - test     # 테스트 환경 배포
   workflow_dispatch:   # 수동 실행 허용
 
@@ -159,9 +159,18 @@ jobs:
             # ============================================================
             # 🔑 원격 서버에 .env 파일 생성
             # ============================================================
-            echo "📝 원격 서버에 .env 파일을 생성합니다..."
-            echo "${{ secrets.ENV }}" > .env
-            echo "✅ .env 파일이 성공적으로 생성되었습니다."
+            # Docker run 명령어에 추가할 --env-file 옵션을 저장할 변수
+            ENV_FILE_OPTION=""
+            
+            # GitHub Secrets에 ENV가 존재하는지 확인
+            if [ -n "${{ secrets.ENV }}" ]; then
+              echo "📝 GitHub Secrets에 ENV가 존재합니다. 원격 서버에 .env 파일을 생성합니다..."
+              echo "${{ secrets.ENV }}" > .env
+              ENV_FILE_OPTION="--env-file .env" # 변수가 존재할 경우에만 옵션 추가
+              echo "✅ .env 파일이 성공적으로 생성되었습니다."
+            else
+              echo "ℹ️ GitHub Secrets에 ENV가 존재하지 않습니다. .env 파일 생성을 건너뜁니다."
+            fi
 
             # ============================================================
             # Docker 이미지 풀 (Pull)
@@ -194,7 +203,7 @@ jobs:
             docker run -d \
               -p "${PORT}:8000" \
               --name "$CONTAINER_NAME" \
-              --env-file .env \
+              $ENV_FILE_OPTION \
               -e TZ=Asia/Seoul \
               -v /etc/localtime:/etc/localtime:ro \
               -v "${HOST_MOUNT_PATH}:${CONTAINER_MOUNT_PATH}" \
