@@ -15,6 +15,7 @@ RUN uv pip install --system \
 COPY ./src ./src
 
 ENV PORT=8000
+
 EXPOSE ${PORT}
 
 CMD exec gunicorn -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:${PORT} src.server:app
