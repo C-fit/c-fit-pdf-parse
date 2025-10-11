@@ -31,7 +31,7 @@ def is_safe_file(filename: str, content_type: str) -> bool:
     if content_type not in ALLOWED_MIME_TYPES:
         return False
         
-    return True
+    return True 
 
 
 @app.post("/preprocess-resume", dependencies=[Depends(verify_api_key)])
