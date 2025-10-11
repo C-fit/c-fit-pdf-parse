@@ -2,34 +2,15 @@ import os
 import shutil
 import tempfile
 import uuid
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, UploadFile, File, HTTPException, Request, Depends, Security
+from fastapi.security import APIKeyHeader
 from fastapi.concurrency import run_in_threadpool
 
-from src.pdf_loader import load_pdf
-
-# from dotenv import load_dotenv
-# load_dotenv()
+from src.modules.pdf_loader import load_pdf
+from src.core.config import settings
+from src.core.auth import verify_api_key
 
 app = FastAPI()
-
-# --- 설정 (Configuration) ---
-
-PRODUCTION_ORIGINS = [
-    "https://your-production-frontend.com",
-]
-
-origins = [
-    "http:localhost:3000"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # NOTE: 배포 시 PRODUCTION_ORIGINS로 설정
-    allow_credentials=True,
-    allow_methods=["POST"],
-    allow_headers=["Content-Type"],
-)
 
 ALLOWED_EXTENSIONS = {"pdf"}
 ALLOWED_MIME_TYPES = {"application/pdf"}
@@ -53,7 +34,7 @@ def is_safe_file(filename: str, content_type: str) -> bool:
     return True
 
 
-@app.post("/preprocess-resume")
+@app.post("/preprocess-resume", dependencies=[Depends(verify_api_key)])
 async def preprocess_resume_endpoint(resume_file: UploadFile = File(...)):
     """PDF 파일을 파싱하여 Markdown 문자열로 변환합니다."""
     
