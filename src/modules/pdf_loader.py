@@ -32,8 +32,10 @@ def load_pdf(pdf_file):
         print(output)
         
         return {
-            "resume": output,
-            "pages": page_count
+            "resume_txt": output,
+            "resume": {
+                "pages": page_count
+            }
         }
 
     except Exception as e:
