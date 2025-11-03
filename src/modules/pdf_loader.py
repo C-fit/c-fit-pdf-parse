@@ -23,10 +23,18 @@ def load_pdf(pdf_file):
         )
 
         result = doc_converter.convert(pdf_file)
+        page_count = len(result.document.pages)
         output = result.document.export_to_markdown()
+        
+        print("=" * 30)
+        print(f"이력서 페이지 수: {page_count}")
+        print("이력서 Parsing 결과:")
         print(output)
-
-        return output
+        
+        return {
+            "resume": output,
+            "pages": page_count
+        }
 
     except Exception as e:
         print(f"Error during PDF conversion with Tesseract: {e}")
